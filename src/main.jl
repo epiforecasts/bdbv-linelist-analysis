@@ -9,10 +9,9 @@ Run NUTS on `model` using the given AD backend and per-chain prior
 init.
 
 `adtype` defaults to `AutoForwardDiff()`. On this model it is the
-fastest-to-compile backend and at least as fast to sample as the
-reverse-mode alternatives (Mooncake, Enzyme) once the chains run in
-parallel, so it is the simplest sensible default. Pass another
-`ADTypes` backend to override.
+fastest-to-compile backend and at least as fast to sample as a
+reverse-mode backend once the chains run in parallel, so it is the
+simplest sensible default. Pass another `ADTypes` backend to override.
 
 A parent `MersenneTwister(seed)` is used to draw `chains` child
 seeds, which are passed as an explicit RNG vector to `sample`. This
