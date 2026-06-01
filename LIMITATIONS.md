@@ -47,7 +47,10 @@
   LogNormal parametrisation in the stratified model would need a
   different SD prior to be consistent with the unstratified fit, and
   the Weibull shape prior needed extra truncation that complicated
-  the stratified parametrisation. Gamma is the WAIC winner anyway.
+  the stratified parametrisation. Gamma also fits the pooled data
+  best (lowest WAIC), so reusing it here is a reasonable convenience;
+  we have not tested whether each stratum is best fit by Gamma on its
+  own.
 
 ## Inference
 
