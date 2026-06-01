@@ -8,9 +8,7 @@
   n = 15; onset → notification has max observed 86 d).
 - No transmission pairs in the deposit. The serial and generation
   intervals cannot be estimated from this dataset — they need
-  transmission-pair information we do not have. (R₀ is not computed
-  here, but it is not precluded by the data: it follows from the
-  early-phase growth rate given an assumed generation interval.)
+  transmission-pair information we do not have.
 - No exposure dates. The incubation period cannot be fitted from this
   deposit.
 - 5 admission-date encoding outliers (−89, −5, −4, −1, 328720 days
