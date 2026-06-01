@@ -8,10 +8,10 @@ $(TYPEDSIGNATURES)
 Run NUTS on `model` using the given AD backend and per-chain prior
 init.
 
-`adtype` defaults to `AutoMooncake(; config = nothing)` (reverse-mode):
-the per-case latent-joint model carries ~150 latent parameters, where
-reverse-mode AD scales far better than the forward-mode default. Pass
-`AutoForwardDiff()` to fall back to the previous backend.
+`adtype` defaults to `AutoForwardDiff()`. On this model it is the
+fastest-to-compile backend and at least as fast to sample as a
+reverse-mode backend once the chains run in parallel, so it is the
+simplest sensible default. Pass another `ADTypes` backend to override.
 
 A parent `MersenneTwister(seed)` is used to draw `chains` child
 seeds, which are passed as an explicit RNG vector to `sample`. This
@@ -24,7 +24,7 @@ function sample_fit(model;
         target_accept = 0.95,
         seed = 20260519,
         progress = false,
-        adtype = AutoMooncake(; config = nothing),
+        adtype = AutoForwardDiff(),
     )
     parent = MersenneTwister(seed)
     rng = MersenneTwister(rand(parent, UInt64))
