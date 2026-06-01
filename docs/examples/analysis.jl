@@ -165,6 +165,11 @@ headline_estimates = DataFrame(
     "Rosello mean" => [4.00, 7.59, 8.00, 8.83],
 )
 
+# Per-draw posterior shape, scale and SD for each atomic Gamma delay
+# are reported in [Gamma shape, scale and SD per atomic delay](#Gamma-shape,-scale-and-SD-per-atomic-delay)
+# further down the page, and as columns in
+# [`posterior_gamma.csv`](https://github.com/epiforecasts/bdbv-linelist-analysis/releases/tag/main-latest).
+
 #src The block below writes the same headline numbers to disk as a
 #src Markdown snippet that the docs build splices into the home page,
 #src keeping the two views in sync. It is hidden from the rendered
