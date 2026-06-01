@@ -168,15 +168,40 @@ headline_estimates = DataFrame(
     "Rosello mean" => [4.00, 7.59, 8.00, 8.83],
 )
 
-# The same numbers are written to disk as a Markdown snippet so the docs
-# build can splice them into the home page — keeps the two views in sync.
-
+#src The block below writes the same headline numbers to disk as a
+#src Markdown snippet that the docs build splices into the home page,
+#src keeping the two views in sync. It is hidden from the rendered
+#src walkthrough because that is a build-system concern, not a reader
+#src concern.
 include(joinpath(pkgdir(BdbvLinelist), "docs", "examples", "_helpers.jl"))    #hide
 let snippet_path = joinpath(BdbvLinelist.OUTPUT_DIR, "cache", "headline.md")  #hide
     mkpath(dirname(snippet_path))                                             #hide
     write(snippet_path, headline_snippet(post, d))                            #hide
     nothing                                                                   #hide
 end                                                                           #hide
+
+# ## Length of stay in hospital
+#
+# Time from admission to leaving hospital (admission → departure). The
+# overall length of stay is a mixture of the fatal pathway
+# (admission → death) and the survivor pathway (admission → discharge),
+# weighted per posterior draw by the in-hospital fatality among admitted
+# cases — `Beta(1 + n_died, 1 + n_discharged)` with 22 deaths and 15
+# discharges. The fatal and survivor rows are the corresponding atomic
+# components; the overall row is the bed-occupancy-relevant marginal
+# across both outcomes.
+
+length_of_stay = DataFrame(
+    pathway = [
+        "Fatal (admission → death)",
+        "Survivor (admission → discharge)",
+        "Overall (mixture)",
+    ],
+    median = [fmt(post.median_ad), fmt(post.median_ac), fmt(post.los_median)],
+    mean   = [fmt(post.mean_ad),   fmt(post.mean_ac),   fmt(post.los_mean)],
+    sd     = ["—",                 "—",                 fmt(post.los_sd)],
+    P95    = ["—",                 "—",                 fmt(post.los_p95)],
+)
 
 # ## Epidemic curve
 #
@@ -280,29 +305,6 @@ convolved_marginals = DataFrame(
     mean   = [fmt(post.od_mean),   fmt(post.oc_mean)],
     sd     = [fmt(post.od_sd),     fmt(post.oc_sd)],
     P95    = [fmt(post.od_p95),    fmt(post.oc_p95)],
-)
-
-# ## Length of stay in hospital
-#
-# Time from admission to leaving hospital (admission → departure). The
-# overall length of stay is a mixture of the fatal pathway
-# (admission → death) and the survivor pathway (admission → discharge),
-# weighted per posterior draw by the in-hospital fatality among admitted
-# cases — `Beta(1 + n_died, 1 + n_discharged)` with 22 deaths and 15
-# discharges. The fatal and survivor rows are the corresponding atomic
-# components; the overall row is the bed-occupancy-relevant marginal
-# across both outcomes.
-
-length_of_stay = DataFrame(
-    pathway = [
-        "Fatal (admission → death)",
-        "Survivor (admission → discharge)",
-        "Overall (mixture)",
-    ],
-    median = [fmt(post.median_ad), fmt(post.median_ac), fmt(post.los_median)],
-    mean   = [fmt(post.mean_ad),   fmt(post.mean_ac),   fmt(post.los_mean)],
-    sd     = ["—",                 "—",                 fmt(post.los_sd)],
-    P95    = ["—",                 "—",                 fmt(post.los_p95)],
 )
 
 # ## Gamma shape, scale and SD per atomic delay

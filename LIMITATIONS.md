@@ -6,12 +6,11 @@
   delays (onset → admit n = 40; onset → death via convolution
   n ≥ 22) and wide for sparse or heavy-tailed ones (admit → discharge
   n = 15; onset → notification has max observed 86 d).
-- No transmission pairs in the deposit. Serial interval, generation
-  interval and R₀ cannot be estimated. The Rosello deposit is
-  canonical for Isiro and the underlying source data is not available.
-- No exposure dates. Incubation period cannot be fitted. Use
-  MacNeil 2010 (mean 6.3 d, 95% CI 5.2–7.3, n = 24, 2007 Uganda)
-  instead.
+- No transmission pairs in the deposit. The serial and generation
+  intervals cannot be estimated from this dataset — they need
+  transmission-pair information we do not have.
+- No exposure dates. The incubation period cannot be fitted from this
+  deposit.
 - 5 admission-date encoding outliers (−89, −5, −4, −1, 328720 days
   from onset) and 1 notification-date outlier (−62 days) are set to
   missing during loading. These look like onset/secondary date swaps
@@ -52,11 +51,9 @@
 
 ## Inference
 
-- InitFromPrior works here. The bounded-primary reparametrisation
-  on the per-case latents means NUTS sees a smoothly-bounded support
-  (no hard `t_s > t_p` constraint), so warm-up is well-behaved.
-- Single seed (20260519). The convergence diagnostics are strong but
-  a multi-seed run is a useful robustness check.
+- All reported results come from a single random seed (20260519). The
+  convergence checks look strong, but we have not done a multi-seed run
+  to confirm that.
 
 ## Generalisability
 
