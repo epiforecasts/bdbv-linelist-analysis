@@ -56,32 +56,20 @@ function _unique_counts(v::AbstractVector)
     return uniques, [counts[u] for u in uniques]
 end
 
-# Weighted sum of `logpdf(dist, u)` over unique observations `uniques`
-# with integer multiplicities `counts`. Equivalent to summing
-# `logpdf(dist, x)` over the original (de-duplicated) observation
-# vector, but with one `logpdf` call per unique value.
-@inline function _weighted_loglik(dist, uniques::AbstractVector, counts::AbstractVector{Int})
-    s = zero(logpdf(dist, first(uniques)))
-    @inbounds for i in eachindex(uniques)
-        s += counts[i] * logpdf(dist, uniques[i])
-    end
-    return s
-end
-
 # One stratum × delay-component weighted log-likelihood. Builds the
 # doubly-censored distribution from the family + log-mean (which the
 # caller may have shifted by the HCW β) + log-shape, then sums
-# count-weighted `logpdf` over the unique values in `obs`. Returns
-# zero (typed to the param-promoted Real) when `obs` is empty so the
-# caller can pass it through `@addlogprob!` unconditionally.
+# count-weighted `logpdf` over the unique values in `obs` via
+# CensoredDistributions' `weight` (each unique value contributes
+# `count * logpdf`). Returns zero (typed to the param-promoted Real)
+# when `obs` is empty so the caller can pass it through `@addlogprob!`
+# unconditionally.
 @inline function _stratum_loglik(fam, log_mean, log_shape, obs)
     isempty(obs) && return zero(log_mean + log_shape)
     u, c = _unique_counts(obs)
-    return _weighted_loglik(
-        double_interval_censored(
-            build_delay_dist(fam, log_mean, log_shape);
-            interval = 1.0),
-        u, c)
+    dist = double_interval_censored(
+        build_delay_dist(fam, log_mean, log_shape); interval = 1.0)
+    return logpdf(weight(dist, c), u)
 end
 
 # Family singletons used for dispatch. The symbol-keyed public API
@@ -291,11 +279,10 @@ build the death-pathway mixture marginal.
     fam = delay_family(family)
     dist_cd ~ to_submodel(delay_prior(fam, log(8.0), 1.0, 1.0))
     if !isempty(delays)
-        # Weighted-by-multiplicity likelihood — see `bdbv_model`.
+        # Weighted-by-multiplicity likelihood — see `_stratum_loglik`.
         u_cd, c_cd = _unique_counts(delays)
-        Turing.@addlogprob! _weighted_loglik(
-            double_interval_censored(dist_cd; interval = 1.0), u_cd, c_cd,
-        )
+        Turing.@addlogprob! logpdf(
+            weight(double_interval_censored(dist_cd; interval = 1.0), c_cd), u_cd)
     end
     # p_admit ~ Beta(1+n_admit, 1+n_comm); independent of the delay fit.
     p_admit ~ Beta(1 + n_admit_died, 1 + n_comm_died)
