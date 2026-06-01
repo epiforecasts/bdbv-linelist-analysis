@@ -42,34 +42,22 @@
 # Bernoulli's domain check happy when η drifts during NUTS warmup.
 _logistic(x) = clamp(inv(1 + exp(-x)), 1e-10, 1.0 - 1e-10)
 
-# Weighted sum of `logpdf(dist, u)` over unique observations `uniques`
-# with integer multiplicities `counts`. Equivalent to summing
-# `logpdf(dist, x)` over the original (de-duplicated) observation
-# vector, but with one `logpdf` call per unique value.
-@inline function _weighted_loglik(dist, uniques::AbstractVector, counts::AbstractVector{Int})
-    s = zero(logpdf(dist, first(uniques)))
-    @inbounds for i in eachindex(uniques)
-        s += counts[i] * logpdf(dist, uniques[i])
-    end
-    return s
-end
-
 # One stratum × delay-component weighted log-likelihood. Builds the
 # doubly-censored distribution from the family + log-mean (which the
 # caller may have shifted by the HCW β) + log-shape, then sums
-# count-weighted `logpdf` over the precomputed unique values. `uc` is
-# the `(uniques, counts)` pair from `_unique_counts`, computed once in
-# `build_data` rather than on every model evaluation. Returns zero
-# (typed to the param-promoted Real) when the stratum is empty so the
-# caller can pass it through `@addlogprob!` unconditionally.
+# count-weighted `logpdf` over the precomputed unique values via
+# CensoredDistributions' `weight` (each unique value contributes
+# `count * logpdf`). `uc` is the `(uniques, counts)` pair from
+# `_unique_counts`, computed once in `build_data` rather than on every
+# model evaluation. Returns zero (typed to the param-promoted Real)
+# when the stratum is empty so the caller can pass it through
+# `@addlogprob!` unconditionally.
 @inline function _stratum_loglik(fam, log_mean, log_shape, uc)
     u, c = uc
     isempty(u) && return zero(log_mean + log_shape)
-    return _weighted_loglik(
-        double_interval_censored(
-            build_delay_dist(fam, log_mean, log_shape);
-            interval = 1.0),
-        u, c)
+    dist = double_interval_censored(
+        build_delay_dist(fam, log_mean, log_shape); interval = 1.0)
+    return logpdf(weight(dist, c), u)
 end
 
 # Family singletons used for dispatch. The symbol-keyed public API
@@ -282,9 +270,8 @@ build the death-pathway mixture marginal.
     # / `build_data`); the deduplication does not run inside the model.
     u_cd, c_cd = uc
     if !isempty(u_cd)
-        Turing.@addlogprob! _weighted_loglik(
-            double_interval_censored(dist_cd; interval = 1.0), u_cd, c_cd,
-        )
+        Turing.@addlogprob! logpdf(
+            weight(double_interval_censored(dist_cd; interval = 1.0), c_cd), u_cd)
     end
     # p_admit ~ Beta(1+n_admit, 1+n_comm); independent of the delay fit.
     p_admit ~ Beta(1 + n_admit_died, 1 + n_comm_died)
