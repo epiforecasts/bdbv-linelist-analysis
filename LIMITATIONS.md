@@ -10,8 +10,7 @@
   interval and R₀ cannot be estimated from this dataset — they need
   transmission-pair information we do not have.
 - No exposure dates. The incubation period cannot be fitted from this
-  deposit. Use MacNeil 2010 (mean 6.3 d, 95% CI 5.2–7.3, n = 24, 2007
-  Uganda) instead.
+  deposit.
 - 5 admission-date encoding outliers (−89, −5, −4, −1, 328720 days
   from onset) and 1 notification-date outlier (−62 days) are set to
   missing during loading. These look like onset/secondary date swaps
