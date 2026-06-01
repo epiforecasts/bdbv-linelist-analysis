@@ -51,11 +51,9 @@
 
 ## Inference
 
-- InitFromPrior works here. The bounded-primary reparametrisation
-  on the per-case latents means NUTS sees a smoothly-bounded support
-  (no hard `t_s > t_p` constraint), so warm-up is well-behaved.
-- Single seed (20260519). The convergence diagnostics are strong but
-  a multi-seed run is a useful robustness check.
+- All reported results come from a single random seed (20260519). The
+  convergence checks look strong, but we have not done a multi-seed run
+  to confirm that.
 
 ## Generalisability
 
