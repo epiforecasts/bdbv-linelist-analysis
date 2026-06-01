@@ -116,6 +116,22 @@ function fit_growth_rate(ll; n_samples = 1000, n_chains = 2, seed = 20260526)
     return (; r_week, r_day, doubling_time, rising, chain)
 end
 
+# Compress a delay vector into its unique values and their integer
+# multiplicities. The marginalised likelihoods weight one `logpdf` call
+# per unique (lower, upper) pair by its count, so this deduplication is
+# deterministic data prep — computed once here in `build_data` rather
+# than on every model evaluation (Turing has no transformed-data step).
+# At day-level censoring and small N it collapses ~38 observations to
+# ~10–15 unique values.
+function _unique_counts(v::AbstractVector)
+    counts = Dict{eltype(v), Int}()
+    for x in v
+        counts[x] = get(counts, x, 0) + 1
+    end
+    uniques = collect(keys(counts))
+    return uniques, [counts[u] for u in uniques]
+end
+
 # Integer day-difference for each case where both dates exist and the
 # delay is non-negative. Used to scrub biologically-impossible
 # encoding errors at the same time as collecting per-pair delays.
@@ -261,6 +277,17 @@ function build_data(ll)
         onset_to_comm_death, n_admit_died, n_comm_died,
         onset_to_death_all,
         case_events,
+        # Precomputed unique-value/count pairs for the marginalised
+        # likelihoods (stratified subsets + community pathways), so the
+        # deduplication runs once here, not inside the models.
+        unique_counts = (
+            oa_h = _unique_counts(oa_h), oa_n = _unique_counts(oa_n),
+            ad_h = _unique_counts(ad_h), ad_n = _unique_counts(ad_n),
+            ac_h = _unique_counts(ac_h), ac_n = _unique_counts(ac_n),
+            on_h = _unique_counts(on_h), on_n = _unique_counts(on_n),
+            comm = _unique_counts(onset_to_comm_death),
+            death_all = _unique_counts(onset_to_death_all),
+        ),
         outcome, hcw, probable, age_z,
         N = nrow(ll),
     )
