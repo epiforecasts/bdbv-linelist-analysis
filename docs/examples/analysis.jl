@@ -168,9 +168,11 @@ headline_estimates = DataFrame(
     "Rosello mean" => [4.00, 7.59, 8.00, 8.83],
 )
 
-# The same numbers are written to disk as a Markdown snippet so the docs
-# build can splice them into the home page — keeps the two views in sync.
-
+#src The block below writes the same headline numbers to disk as a
+#src Markdown snippet that the docs build splices into the home page,
+#src keeping the two views in sync. It is hidden from the rendered
+#src walkthrough because that is a build-system concern, not a reader
+#src concern.
 include(joinpath(pkgdir(BdbvLinelist), "docs", "examples", "_helpers.jl"))    #hide
 let snippet_path = joinpath(BdbvLinelist.OUTPUT_DIR, "cache", "headline.md")  #hide
     mkpath(dirname(snippet_path))                                             #hide
@@ -267,6 +269,29 @@ prior_sensitivity = DataFrame(
                 for v in DELAY_LM_VARS],
 )
 
+# ## Length of stay in hospital
+#
+# Time from admission to leaving hospital (admission → departure). The
+# overall length of stay is a mixture of the fatal pathway
+# (admission → death) and the survivor pathway (admission → discharge),
+# weighted per posterior draw by the in-hospital fatality among admitted
+# cases — `Beta(1 + n_died, 1 + n_discharged)` with 22 deaths and 15
+# discharges. The fatal and survivor rows are the corresponding atomic
+# components; the overall row is the bed-occupancy-relevant marginal
+# across both outcomes.
+
+length_of_stay = DataFrame(
+    pathway = [
+        "Fatal (admission → death)",
+        "Survivor (admission → discharge)",
+        "Overall (mixture)",
+    ],
+    median = [fmt(post.median_ad), fmt(post.median_ac), fmt(post.los_median)],
+    mean   = [fmt(post.mean_ad),   fmt(post.mean_ac),   fmt(post.los_mean)],
+    sd     = ["—",                 "—",                 fmt(post.los_sd)],
+    P95    = ["—",                 "—",                 fmt(post.los_p95)],
+)
+
 # ## Epidemic curve
 #
 # Weekly onset counts with HCW subcounts stacked.
@@ -281,7 +306,8 @@ plot_epi_curve(ll)
 # `log(λ_t) = α + r·t` with weakly-informative `Normal(0, 5)` and
 # `Normal(0, 1)` priors on `α` and `r_week`. Intended as a prior
 # source for downstream re-applications (e.g. the outbreak-size work
-# in `epiforecasts/BVDOutbreakSize`) rather than as a primary
+# in [`epiforecasts/BVDOutbreakSize`](https://github.com/epiforecasts/BVDOutbreakSize))
+# rather than as a primary
 # headline of this analysis. The CrI on `r` covers zero — Isiro was
 # a slow, noisy rise — so use the posterior as a weakly-informative
 # prior, not a tight constraint.
@@ -313,7 +339,8 @@ growth_estimates = DataFrame(
 
 # **Recommended downstream prior on `r` (per day):**
 # `Normal(mean(r_day), sd(r_day))` from the posterior above. A
-# single-line summary intended for `epiforecasts/BVDOutbreakSize`
+# single-line summary intended for
+# [`epiforecasts/BVDOutbreakSize`](https://github.com/epiforecasts/BVDOutbreakSize)
 # and any other downstream model that needs an Isiro-anchored growth
 # prior. See [Limitations](limitations.md#downstream-priors) for
 # caveats.
@@ -367,29 +394,6 @@ convolved_marginals = DataFrame(
     mean   = [fmt(post.od_mean),   fmt(post.oc_mean)],
     sd     = [fmt(post.od_sd),     fmt(post.oc_sd)],
     P95    = [fmt(post.od_p95),    fmt(post.oc_p95)],
-)
-
-# ## Length of stay in hospital
-#
-# Time from admission to leaving hospital (admission → departure). The
-# overall length of stay is a mixture of the fatal pathway
-# (admission → death) and the survivor pathway (admission → discharge),
-# weighted per posterior draw by the in-hospital fatality among admitted
-# cases — `Beta(1 + n_died, 1 + n_discharged)` with 22 deaths and 15
-# discharges. The fatal and survivor rows are the corresponding atomic
-# components; the overall row is the bed-occupancy-relevant marginal
-# across both outcomes.
-
-length_of_stay = DataFrame(
-    pathway = [
-        "Fatal (admission → death)",
-        "Survivor (admission → discharge)",
-        "Overall (mixture)",
-    ],
-    median = [fmt(post.median_ad), fmt(post.median_ac), fmt(post.los_median)],
-    mean   = [fmt(post.mean_ad),   fmt(post.mean_ac),   fmt(post.los_mean)],
-    sd     = ["—",                 "—",                 fmt(post.los_sd)],
-    P95    = ["—",                 "—",                 fmt(post.los_p95)],
 )
 
 # ## Gamma shape, scale and SD per atomic delay
