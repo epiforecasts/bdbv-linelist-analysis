@@ -1,4 +1,4 @@
-import{c as E,S as s,j as I,m as a}from"./chunks/framework.Di0bVNrJ.js";const p=JSON.parse('{"title":"Analysis walkthrough","description":"","frontmatter":{},"headers":[],"relativePath":"analysis.md","filePath":"analysis.md","lastUpdated":null}'),R={name:"analysis.md"};function n(t,i,h,e,l,A){return s(),I("div",null,[...i[0]||(i[0]=[a(`<h1 id="Analysis-walkthrough" tabindex="-1">Analysis walkthrough <a class="header-anchor" href="#Analysis-walkthrough" aria-label="Permalink to &quot;Analysis walkthrough {#Analysis-walkthrough}&quot;">​</a></h1><p>This page fits the BDBV delay + CFR model in <code>BdbvLinelist.jl</code> to the Rosello <em>et al.</em> 2015 Isiro deposit (n = 52) and renders the headline outputs. Three parametric families (LogNormal, Gamma, Weibull) are compared by WAIC; the Gamma fit is the canonical run. The marginal onset → death and onset → discharge distributions are derived in post-processing as Monte Carlo convolutions of the atomic components, enforcing the per-case natural-history identity at the population level. A logistic regression stratifies case-fatality by HCW status, case definition (Probable vs Confirmed), and standardised age.</p><p>Priors, the doubly-censored likelihood, and post-processing are detailed on the <a href="./model">Model</a> page. Caveats are on the <a href="./limitations">Limitations</a> page. Per-draw posterior CSV and figure bundle from this build is in the rolling <a href="https://github.com/epiforecasts/bdbv-linelist-analysis/releases/tag/main-latest" target="_blank" rel="noreferrer"><code>main-latest</code> release</a>.</p><div class="language-julia vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">julia</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">using</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> BdbvLinelist</span></span>
+import{_ as E,o as s,c as I,ao as a}from"./chunks/framework.Cq-mrT7A.js";const p=JSON.parse('{"title":"Analysis walkthrough","description":"","frontmatter":{},"headers":[],"relativePath":"analysis.md","filePath":"analysis.md","lastUpdated":null}'),R={name:"analysis.md"};function n(t,i,h,e,l,A){return s(),I("div",null,[...i[0]||(i[0]=[a(`<h1 id="Analysis-walkthrough" tabindex="-1">Analysis walkthrough <a class="header-anchor" href="#Analysis-walkthrough" aria-label="Permalink to &quot;Analysis walkthrough {#Analysis-walkthrough}&quot;">​</a></h1><p>This page fits the BDBV delay + CFR model in <code>BdbvLinelist.jl</code> to the Rosello <em>et al.</em> 2015 Isiro deposit (n = 52) and renders the headline outputs. Three parametric families (LogNormal, Gamma, Weibull) are compared by WAIC; the Gamma fit is the canonical run. The marginal onset → death and onset → discharge distributions are derived in post-processing as Monte Carlo convolutions of the atomic components, enforcing the per-case natural-history identity at the population level. A logistic regression stratifies case-fatality by HCW status, case definition (Probable vs Confirmed), and standardised age.</p><p>Priors, the doubly-censored likelihood, and post-processing are detailed on the <a href="./model">Model</a> page. Caveats are on the <a href="./limitations">Limitations</a> page. Per-draw posterior CSV and figure bundle from this build is in the rolling <a href="https://github.com/epiforecasts/bdbv-linelist-analysis/releases/tag/main-latest" target="_blank" rel="noreferrer"><code>main-latest</code> release</a>.</p><div class="language-julia vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang">julia</span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">using</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> BdbvLinelist</span></span>
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">using</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> DataFrames</span></span>
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">using</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> DataFramesMeta</span></span>
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">using</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Chain</span></span>
@@ -65,9 +65,9 @@ import{c as E,S as s,j as I,m as a}from"./chunks/framework.Di0bVNrJ.js";const p=
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.4</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
-<span class="line"><span>└   ϵ = 0.4</span></span>
-<span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.8</span></span>
+<span class="line"><span>┌ Info: Found initial step size</span></span>
+<span class="line"><span>└   ϵ = 0.4</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.4</span></span>
 <span class="line"><span>┌ Info: Fit done</span></span>
@@ -80,9 +80,9 @@ import{c as E,S as s,j as I,m as a}from"./chunks/framework.Di0bVNrJ.js";const p=
 <span class="line"><span>┌ Info: Fitting family</span></span>
 <span class="line"><span>└   family = :gamma</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
-<span class="line"><span>└   ϵ = 0.05</span></span>
-<span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.2</span></span>
+<span class="line"><span>┌ Info: Found initial step size</span></span>
+<span class="line"><span>└   ϵ = 0.05</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.2</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
@@ -249,17 +249,17 @@ import{c as E,S as s,j as I,m as a}from"./chunks/framework.Di0bVNrJ.js";const p=
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.2</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
-<span class="line"><span>└   ϵ = 0.2</span></span>
-<span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.4</span></span>
+<span class="line"><span>┌ Info: Found initial step size</span></span>
+<span class="line"><span>└   ϵ = 0.2</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.4</span></span>
 <span class="line"><span>┌ Info: Prior sensitivity</span></span>
 <span class="line"><span>└   prior_scale = 1.0</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
-<span class="line"><span>└   ϵ = 0.05</span></span>
-<span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.2</span></span>
+<span class="line"><span>┌ Info: Found initial step size</span></span>
+<span class="line"><span>└   ϵ = 0.05</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.2</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
@@ -273,9 +273,9 @@ import{c as E,S as s,j as I,m as a}from"./chunks/framework.Di0bVNrJ.js";const p=
 <span class="line"><span>┌ Info: Prior sensitivity</span></span>
 <span class="line"><span>└   prior_scale = 2.0</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
-<span class="line"><span>└   ϵ = 0.05</span></span>
-<span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.2</span></span>
+<span class="line"><span>┌ Info: Found initial step size</span></span>
+<span class="line"><span>└   ϵ = 0.05</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.025</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
