@@ -135,11 +135,11 @@ end
     return build_delay_dist(GammaDelay(), log_mean, log_shape)
 end
 
-# Weibull's log-shape is truncated to keep `α ∈ (≈0.37, ≈2.7)` so
+# Weibull's log-shape is truncated to keep `α ∈ (≈0.22, ≈4.5)` so
 # `Γ(1 + 1/α)` stays well-defined and the scale stays positive under NUTS.
 @model function delay_prior(::WeibullDelay, mean_loc, mean_scale, shape_scale)
     log_mean  ~ Normal(mean_loc, mean_scale)
-    log_shape ~ truncated(Normal(0.0, shape_scale); lower = -1.0, upper = 1.0)
+    log_shape ~ truncated(Normal(0.0, shape_scale); lower = -1.5, upper = 1.5)
     return build_delay_dist(WeibullDelay(), log_mean, log_shape)
 end
 
