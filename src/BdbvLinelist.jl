@@ -10,7 +10,7 @@ using Dates: Dates, Date, Day
 using Distributions: Normal, LogNormal, Gamma, Weibull, Bernoulli, Beta,
                      Poisson, Uniform, truncated, logpdf, cdf
 using SpecialFunctions: SpecialFunctions
-using CensoredDistributions: double_interval_censored
+using CensoredDistributions: double_interval_censored, weight
 using Makie: Figure, Axis, Relative, barplot!, lines!, band!, vlines!,
              xlims!, rowsize!, axislegend
 using CairoMakie: CairoMakie
