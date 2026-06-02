@@ -72,8 +72,6 @@ push delays longer.
   or selection (HCWs were preferentially confirmed). The
   probable-vs-confirmed adjustment partially controls for the latter
   but does not eliminate it.
-- Transmission. Use Zaire-EVD generation interval priors for
-  downstream Rt or nowcasting work.
 - Reservoir or spillover dynamics.
 
 ## Downstream priors
