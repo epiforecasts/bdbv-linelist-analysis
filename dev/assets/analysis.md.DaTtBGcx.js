@@ -60,9 +60,9 @@ import{_ as E,o as s,c as I,ao as A}from"./chunks/framework.DNV9DCtx.js";const p
 <span class="line"><span>┌ Info: Fitting family</span></span>
 <span class="line"><span>└   family = :lognormal</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
-<span class="line"><span>└   ϵ = 0.8</span></span>
-<span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.4</span></span>
+<span class="line"><span>┌ Info: Found initial step size</span></span>
+<span class="line"><span>└   ϵ = 0.8</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.4</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
@@ -84,11 +84,11 @@ import{_ as E,o as s,c as I,ao as A}from"./chunks/framework.DNV9DCtx.js";const p
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.2</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
-<span class="line"><span>└   ϵ = 0.05</span></span>
+<span class="line"><span>└   ϵ = 0.2</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.4</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
-<span class="line"><span>└   ϵ = 0.2</span></span>
+<span class="line"><span>└   ϵ = 0.05</span></span>
 <span class="line"><span>┌ Warning: There were 1 divergent transitions. Consider reparameterising your model or using a smaller step size. For adaptive samplers such as NUTS and HMCDA, consider increasing \`target_accept\`.</span></span>
 <span class="line"><span>└ @ Turing.Inference ~/.julia/packages/Turing/4hMHm/src/mcmc/hmc.jl:483</span></span>
 <span class="line"><span>┌ Warning: There were 1 divergent transitions. Consider reparameterising your model or using a smaller step size. For adaptive samplers such as NUTS and HMCDA, consider increasing \`target_accept\`.</span></span>
@@ -107,9 +107,9 @@ import{_ as E,o as s,c as I,ao as A}from"./chunks/framework.DNV9DCtx.js";const p
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.2</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
-<span class="line"><span>└   ϵ = 0.025</span></span>
-<span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.2</span></span>
+<span class="line"><span>┌ Info: Found initial step size</span></span>
+<span class="line"><span>└   ϵ = 0.025</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.003125</span></span>
 <span class="line"><span>┌ Info: Fit done</span></span>
@@ -177,9 +177,9 @@ import{_ as E,o as s,c as I,ao as A}from"./chunks/framework.DNV9DCtx.js";const p
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">end</span></span></code></pre></div><div class="language- vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>┌ Info: Prior sensitivity</span></span>
 <span class="line"><span>└   prior_scale = 0.5</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
-<span class="line"><span>└   ϵ = 0.4</span></span>
-<span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.2</span></span>
+<span class="line"><span>┌ Info: Found initial step size</span></span>
+<span class="line"><span>└   ϵ = 0.4</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.2</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
@@ -191,9 +191,9 @@ import{_ as E,o as s,c as I,ao as A}from"./chunks/framework.DNV9DCtx.js";const p
 <span class="line"><span>┌ Info: Prior sensitivity</span></span>
 <span class="line"><span>└   prior_scale = 1.0</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
-<span class="line"><span>└   ϵ = 0.2</span></span>
-<span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.05</span></span>
+<span class="line"><span>┌ Info: Found initial step size</span></span>
+<span class="line"><span>└   ϵ = 0.2</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.2</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
@@ -209,9 +209,9 @@ import{_ as E,o as s,c as I,ao as A}from"./chunks/framework.DNV9DCtx.js";const p
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.05</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
-<span class="line"><span>└   ϵ = 0.025</span></span>
-<span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.2</span></span>
+<span class="line"><span>┌ Info: Found initial step size</span></span>
+<span class="line"><span>└   ϵ = 0.025</span></span>
 <span class="line"><span>┌ Info: Found initial step size</span></span>
 <span class="line"><span>└   ϵ = 0.025</span></span>
 <span class="line"><span>┌ Warning: There were 1 divergent transitions. Consider reparameterising your model or using a smaller step size. For adaptive samplers such as NUTS and HMCDA, consider increasing \`target_accept\`.</span></span>
