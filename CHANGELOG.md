@@ -39,6 +39,10 @@ for the current state of `main`.
   mean (SD) under the 30-day cap, not their fitted Gamma summary.
 - Delay-family dispatch refactored to use singleton types instead of a
   symbol switch.
+- Count-weighted delay likelihoods in the stratified and community-death
+  models are now *observed* with `~` through a `_weighted_obs` submodel
+  instead of scored via `@addlogprob!`, making those models generative
+  (runnable forward for prior/posterior predictive) (#59).
 - Documentation home page is now sourced from `README.md` and the
   limitations page is lifted into the navigation.
 - All repository URLs relocated from `sbfnk` to the `epiforecasts`
