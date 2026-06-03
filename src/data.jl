@@ -173,13 +173,25 @@ Returns a named tuple with:
   `onset_to_admit`, `admit_to_death`, `admit_to_discharge`,
   `onset_to_notif`. Each vector contains only cases for which both
   endpoint dates are observed and the delay is non-negative.
+- the HCW indicator (`hcw_oa`, …) and HCW-stratified subsets
+  (`oa_h`/`oa_n`, …) of each component, for the stratified model.
+- community-pathway death delays: `onset_to_comm_death` (died with no
+  recorded admission) plus the counts `n_admit_died`, `n_comm_died`;
+  and `onset_to_death_all`, the marginal onset → death over all cases
+  (admit-pathway + community) for the single-distribution fit.
+- `case_events`: per-case event-day offsets from onset, for the
+  per-case shared-latent model.
+- `unique_counts`: precomputed `(uniques, counts)` pairs (via
+  `_unique_counts`) for each stratified component subset and the
+  community pathways (`comm` from `onset_to_comm_death`, `death_all`
+  from `onset_to_death_all`), so the deduplication for the weighted
+  likelihoods runs once here rather than inside the models.
 - CFR covariates over all `N = 52` cases: `outcome` (Bool died),
   `hcw`, `probable`, `age_z`.
 - `N`: total number of cases.
 
-The marginal onset → death and onset → discharge are NOT in the data
-tuple — they are derived in post-processing from the fitted
-component distributions.
+The marginal onset → discharge is NOT in the data tuple — it is
+derived in post-processing from the fitted component distributions.
 """
 function build_data(ll)
     onset = ll.Date_of_onset_symp
