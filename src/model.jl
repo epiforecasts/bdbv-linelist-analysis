@@ -42,31 +42,19 @@
 # Bernoulli's domain check happy when η drifts during NUTS warmup.
 _logistic(x) = clamp(inv(1 + exp(-x)), 1e-10, 1.0 - 1e-10)
 
-# Compress a delay vector into the unique values and their integer
-# multiplicities. Used to weight the censored-likelihood contributions
-# in the marginalised models so each unique (lower, upper) pair only
-# needs one `logpdf` call per evaluation. At day-level censoring and
-# small N this collapses 38 observations down to ~10-15 unique values.
-function _unique_counts(v::AbstractVector)
-    counts = Dict{eltype(v), Int}()
-    for x in v
-        counts[x] = get(counts, x, 0) + 1
-    end
-    uniques = collect(keys(counts))
-    return uniques, [counts[u] for u in uniques]
-end
-
 # One stratum × delay-component weighted log-likelihood. Builds the
 # doubly-censored distribution from the family + log-mean (which the
 # caller may have shifted by the HCW β) + log-shape, then sums
-# count-weighted `logpdf` over the unique values in `obs` via
+# count-weighted `logpdf` over the precomputed unique values via
 # CensoredDistributions' `weight` (each unique value contributes
-# `count * logpdf`). Returns zero (typed to the param-promoted Real)
-# when `obs` is empty so the caller can pass it through `@addlogprob!`
-# unconditionally.
-@inline function _stratum_loglik(fam, log_mean, log_shape, obs)
-    isempty(obs) && return zero(log_mean + log_shape)
-    u, c = _unique_counts(obs)
+# `count * logpdf`). `uc` is the `(uniques, counts)` pair from
+# `_unique_counts`, computed once in `build_data` rather than on every
+# model evaluation. Returns zero (typed to the param-promoted Real)
+# when the stratum is empty so the caller can pass it through
+# `@addlogprob!` unconditionally.
+@inline function _stratum_loglik(fam, log_mean, log_shape, uc)
+    u, c = uc
+    isempty(u) && return zero(log_mean + log_shape)
     dist = double_interval_censored(
         build_delay_dist(fam, log_mean, log_shape); interval = 1.0)
     return logpdf(weight(dist, c), u)
@@ -273,12 +261,13 @@ fatal cases that pass through the admit-and-died pathway). Used by
 [`fit_death_mixture`](@ref) together with the main `bdbv_model` to
 build the death-pathway mixture marginal.
 """
-@model function community_death_model(delays; fam::DelayFamily = GammaDelay(),
+@model function community_death_model(uc; fam::DelayFamily = GammaDelay(),
         n_admit_died::Int = 0, n_comm_died::Int = 0)
     dist_cd ~ to_submodel(delay_prior(fam, log(8.0), 1.0, 1.0))
-    if !isempty(delays)
-        # Weighted-by-multiplicity likelihood — see `_stratum_loglik`.
-        u_cd, c_cd = _unique_counts(delays)
+    # `uc` is the precomputed `(uniques, counts)` pair (see `_unique_counts`
+    # / `build_data`); the deduplication does not run inside the model.
+    u_cd, c_cd = uc
+    if !isempty(u_cd)
         Turing.@addlogprob! logpdf(
             weight(double_interval_censored(dist_cd; interval = 1.0), c_cd), u_cd)
     end
@@ -336,14 +325,15 @@ multiplicative effect on the delay mean for HCWs vs non-HCWs.
     # the HCW shift (when given) to the log-mean, builds the
     # doubly-censored distribution via `build_delay_dist`, and weights
     # the per-unique-value `logpdf` calls by multiplicity (issue #4).
-    Turing.@addlogprob! _stratum_loglik(fam, log_mean_oa + β_oa_hcw, log_shape_oa, d.oa_h)
-    Turing.@addlogprob! _stratum_loglik(fam, log_mean_oa,            log_shape_oa, d.oa_n)
-    Turing.@addlogprob! _stratum_loglik(fam, log_mean_ad + β_ad_hcw, log_shape_ad, d.ad_h)
-    Turing.@addlogprob! _stratum_loglik(fam, log_mean_ad,            log_shape_ad, d.ad_n)
-    Turing.@addlogprob! _stratum_loglik(fam, log_mean_ac + β_ac_hcw, log_shape_ac, d.ac_h)
-    Turing.@addlogprob! _stratum_loglik(fam, log_mean_ac,            log_shape_ac, d.ac_n)
-    Turing.@addlogprob! _stratum_loglik(fam, log_mean_on + β_on_hcw, log_shape_on, d.on_h)
-    Turing.@addlogprob! _stratum_loglik(fam, log_mean_on,            log_shape_on, d.on_n)
+    uc = d.unique_counts
+    Turing.@addlogprob! _stratum_loglik(fam, log_mean_oa + β_oa_hcw, log_shape_oa, uc.oa_h)
+    Turing.@addlogprob! _stratum_loglik(fam, log_mean_oa,            log_shape_oa, uc.oa_n)
+    Turing.@addlogprob! _stratum_loglik(fam, log_mean_ad + β_ad_hcw, log_shape_ad, uc.ad_h)
+    Turing.@addlogprob! _stratum_loglik(fam, log_mean_ad,            log_shape_ad, uc.ad_n)
+    Turing.@addlogprob! _stratum_loglik(fam, log_mean_ac + β_ac_hcw, log_shape_ac, uc.ac_h)
+    Turing.@addlogprob! _stratum_loglik(fam, log_mean_ac,            log_shape_ac, uc.ac_n)
+    Turing.@addlogprob! _stratum_loglik(fam, log_mean_on + β_on_hcw, log_shape_on, uc.on_h)
+    Turing.@addlogprob! _stratum_loglik(fam, log_mean_on,            log_shape_on, uc.on_n)
 
     # CFR block — same as the unstratified model.
     β_0   ~ Normal(0.0, 2.0)

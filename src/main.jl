@@ -114,7 +114,7 @@ function fit_death_mixture(;
     chn_main = sample_fit(bdbv_model(d; fam);
         samples = samples, chains = chains, seed = seed,
         target_accept = target_accept, progress = progress)
-    chn_comm = sample_fit(community_death_model(d.onset_to_comm_death;
+    chn_comm = sample_fit(community_death_model(d.unique_counts.comm;
             fam = fam,
             n_admit_died = d.n_admit_died,
             n_comm_died  = d.n_comm_died);
@@ -126,7 +126,7 @@ function fit_death_mixture(;
     # No counts passed: p_admit defaults to Beta(1, 1) prior. The
     # share is already estimated in chn_comm; only the delay fit from
     # chn_all is used downstream.
-    chn_all = sample_fit(community_death_model(d.onset_to_death_all;
+    chn_all = sample_fit(community_death_model(d.unique_counts.death_all;
             fam = fam);
         samples = samples, chains = chains, seed = seed + 17,
         target_accept = target_accept, progress = progress)
