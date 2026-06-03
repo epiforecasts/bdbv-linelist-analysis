@@ -63,7 +63,7 @@ function analyse(;
     d  = build_data(ll)
     @info "Loaded line list" n_cases=d.N n_onset_admit=length(d.onset_to_admit) n_admit_death=length(d.admit_to_death) n_admit_disch=length(d.admit_to_discharge) n_onset_notif=length(d.onset_to_notif) n_hcw=sum(d.hcw)
 
-    chn = sample_fit(bdbv_model(d; family);
+    chn = sample_fit(bdbv_model(d; fam = delay_family(family));
         samples = samples, chains = chains, seed = seed,
         target_accept = target_accept, progress = progress)
 
@@ -110,11 +110,12 @@ function fit_death_mixture(;
     ll = load_linelist(data); d = build_data(ll)
     @info "Death mixture inputs" n_admit_died=d.n_admit_died n_comm_died=d.n_comm_died comm_delays=d.onset_to_comm_death
 
-    chn_main = sample_fit(bdbv_model(d; family);
+    fam = delay_family(family)
+    chn_main = sample_fit(bdbv_model(d; fam);
         samples = samples, chains = chains, seed = seed,
         target_accept = target_accept, progress = progress)
     chn_comm = sample_fit(community_death_model(d.onset_to_comm_death;
-            family = family,
+            fam = fam,
             n_admit_died = d.n_admit_died,
             n_comm_died  = d.n_comm_died);
         samples = samples, chains = chains, seed = seed + 7,
@@ -126,7 +127,7 @@ function fit_death_mixture(;
     # share is already estimated in chn_comm; only the delay fit from
     # chn_all is used downstream.
     chn_all = sample_fit(community_death_model(d.onset_to_death_all;
-            family = family);
+            fam = fam);
         samples = samples, chains = chains, seed = seed + 17,
         target_accept = target_accept, progress = progress)
 
@@ -237,7 +238,7 @@ function sensitivity(;
     results = Dict{Float64, Any}()
     for s in scales
         @info "Prior sensitivity" prior_scale=s
-        chn = sample_fit(bdbv_model(d; family = family, prior_scale = s);
+        chn = sample_fit(bdbv_model(d; fam = delay_family(family), prior_scale = s);
             samples = samples, chains = chains, seed = seed,
             target_accept = target_accept, progress = progress)
         results[s] = (; chain = chn, diag = diagnostics(chn))
@@ -287,16 +288,16 @@ function compare_families(;
     @info "Loaded line list" n_cases=d.N
 
     results = Dict{Symbol, Any}()
-    for fam in FAMILIES
-        @info "Fitting family" family=fam
-        model = bdbv_model(d; family = fam)
+    for family in FAMILIES
+        @info "Fitting family" family
+        model = bdbv_model(d; fam = delay_family(family))
         chn = sample_fit(model;
             samples = samples, chains = chains, seed = seed,
             target_accept = target_accept, progress = progress)
         diag = diagnostics(chn)
-        waic = compute_waic(chn, d, fam)
-        results[fam] = (; chain = chn, diag = diag, waic = waic)
-        @info "Fit done" family=fam rhat=round(diag.rhat, digits=3) ess=round(Int, diag.ess) ndiv=diag.ndiv waic=round(waic.waic, digits=1) p_waic=round(waic.p_waic, digits=1)
+        waic = compute_waic(chn, d, family)
+        results[family] = (; chain = chn, diag = diag, waic = waic)
+        @info "Fit done" family rhat=round(diag.rhat, digits=3) ess=round(Int, diag.ess) ndiv=diag.ndiv waic=round(waic.waic, digits=1) p_waic=round(waic.p_waic, digits=1)
     end
 
     println("\n=== Family comparison ===\n")

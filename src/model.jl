@@ -162,9 +162,8 @@ Reference: Park *et al.* 2024 (medRxiv
 §2.3.3 for the latent-variable formulation; the bounded-primary
 trick is from Sam Abbott.
 """
-@model function bdbv_model(d; family::Symbol = :gamma,
+@model function bdbv_model(d; fam::DelayFamily = GammaDelay(),
         prior_scale::Float64 = 1.0)
-    fam = delay_family(family)
 
     dist_oa ~ to_submodel(delay_prior(fam, log(3.0),  prior_scale, prior_scale))
     dist_ad ~ to_submodel(delay_prior(fam, log(6.0),  prior_scale, prior_scale))
@@ -274,9 +273,8 @@ fatal cases that pass through the admit-and-died pathway). Used by
 [`fit_death_mixture`](@ref) together with the main `bdbv_model` to
 build the death-pathway mixture marginal.
 """
-@model function community_death_model(delays; family::Symbol = :gamma,
+@model function community_death_model(delays; fam::DelayFamily = GammaDelay(),
         n_admit_died::Int = 0, n_comm_died::Int = 0)
-    fam = delay_family(family)
     dist_cd ~ to_submodel(delay_prior(fam, log(8.0), 1.0, 1.0))
     if !isempty(delays)
         # Weighted-by-multiplicity likelihood — see `_stratum_loglik`.
@@ -309,10 +307,9 @@ the shape parameter but can differ on the central tendency.
 Reports per-delay HCW odds-ratio-like shifts (`exp(β_*_hcw)`) =
 multiplicative effect on the delay mean for HCWs vs non-HCWs.
 """
-@model function bdbv_model_stratified(d; family::Symbol = :gamma)
-    family === :gamma ||
-        throw(ArgumentError("stratified model is only supported for the :gamma family. Use bdbv_model for other families."))
-    fam = delay_family(family)
+@model function bdbv_model_stratified(d; fam::DelayFamily = GammaDelay())
+    fam isa GammaDelay ||
+        throw(ArgumentError("stratified model is only supported for the Gamma family. Use bdbv_model for other families."))
 
     # Shared shape and baseline (non-HCW) log-mean per delay component.
     # Suffixes match the unstratified model: oa, ad, ac, on
